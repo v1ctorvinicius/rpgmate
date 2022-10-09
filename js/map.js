@@ -50,8 +50,9 @@ const onMouseMove = (event) => {
     
     const intersects = raycaster.intersectObjects(scene.children, false);
     if(intersects.length > 0){
-        console.log(intersects[0]);
-        intersects[0].object.material.color.setHex(0xf00);
+        intersects[0].object.geometry.dispose();
+        intersects[0].object.material.dispose();
+        scene.remove(intersects[0].object);
     }
 };
 window.addEventListener("mousemove", onMouseMove);
