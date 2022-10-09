@@ -42,25 +42,74 @@ for (let i = 0; i < 10; i++) {
 
 animate();
 
+let selected;
+
 const onMouseMove = (event) => {
     pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
     pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
-    
     raycaster.setFromCamera(pointer, camera);
     
     const intersects = raycaster.intersectObjects(scene.children, false);
-    if(intersects.length > 0){
-        intersects[0].object.geometry.dispose();
-        intersects[0].object.material.dispose();
-        scene.remove(intersects[0].object);
-    }
+
+    // scene.children.forEach(element => {
+    //     if(element !== selected){
+    //         element.material.color.setHex(0xFFFFFF);
+    //     }
+    // });
 };
 window.addEventListener("mousemove", onMouseMove);
 
-const onMouseDown = (event) => {
-    console.log(event);
+const onMouse1Down = (event) => {
+    if(event.buttons == 1){
+        pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+        pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(pointer, camera);
+
+        
+        const intersects = raycaster.intersectObjects(scene.children, false);
+        
+        if(intersects.length > 0){
+            if(selected != null){
+                selected.material.color.set(0xffffff);
+            }
+            let obj = intersects[0].object;
+            if(obj instanceof THREE.Object3D){
+                obj.material.color.setHex(0x05f505);
+                selected = obj;
+            }
+        }
+    }
+    if(event.buttons == 2){
+        pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+        pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(pointer, camera);
+        
+        const intersects = raycaster.intersectObjects(scene.children, false);
+    
+        if(intersects.length > 0){
+            intersects[0].object.material.color.setHex(0xf57005);
+        }
+    }
+
+    
+
+    // pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    // pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    // raycaster.setFromCamera(pointer, camera);
+    
+    // const intersects = raycaster.intersectObjects(scene.children, false);
+
+    // if(intersects.length > 0){
+    //     intersects[0].object.geometry.dispose();
+    //     intersects[0].object.material.dispose();
+    //     scene.remove(intersects[0].object);
+    // }
 };
-window.addEventListener("mousedown", onMouseDown);
+window.addEventListener("mousedown", onMouse1Down, false);
+
+window.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+}, false);
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
