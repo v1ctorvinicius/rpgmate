@@ -29,6 +29,7 @@ document.body.appendChild(renderer.domElement);
 const cameraPivotGeometry = new THREE.BoxGeometry(0.2,0.2,1);
 
 const cameraPivot = new THREE.Mesh(cameraPivotGeometry);
+cameraPivot.visible = false;
 
 scene.add(cameraPivot);
 cameraPivot.add(camera);
@@ -49,9 +50,18 @@ for (let i = 0; i < 10; i++) {
         auxPlane.position.x = j;
         auxPlane.position.z = i;
         tiles[i][j] = auxPlane;
-        scene.add(auxPlane);
+        // scene.add(auxPlane);
     }
 }
+
+// adding tiles
+for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+        scene.add(tiles[i][j]);
+    }
+}
+
+
 
 function animate () {
     requestAnimationFrame(animate);
@@ -75,9 +85,21 @@ function checkInput () {
         if(e.key == 'd'){
             cameraPivot.translateOnAxis(new THREE.Vector3(1,0,0), cameraMovementSpeed);
         }
+        if(e.key == 'q'){
+            cameraPivot.translateY(-cameraMovementSpeed);
+        }
+        if(e.key == 'e'){
+            cameraPivot.translateY(cameraMovementSpeed);
+        }
 
+        if(e.key == 'ArrowUp'){
+            camera.rotateOnAxis(new THREE.Vector3(1,0,0), cameraRotationSpeed * 2);
+        }
         if(e.key == 'ArrowLeft'){
             cameraPivot.rotateOnWorldAxis(new THREE.Vector3(0,1,0), cameraRotationSpeed * 2);
+        }
+        if(e.key == 'ArrowDown'){
+            camera.rotateOnAxis(new THREE.Vector3(1,0,0), -cameraRotationSpeed * 2);
         }
         if(e.key == 'ArrowRight'){
             cameraPivot.rotateOnWorldAxis(new THREE.Vector3(0,1,0), -cameraRotationSpeed * 2);
