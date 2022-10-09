@@ -1,8 +1,23 @@
 import './three.js';
-// import { DoubleSide } from './three.js';
+import './model/Tile';
+
+class Tile {
+
+    constructor () {
+        const planeGeometry = new THREE.PlaneGeometry(1, 1);
+        const texture = new THREE.TextureLoader().load('..\\..\\assets\\textures\\grass.png');
+        const material = new THREE.MeshBasicMaterial({map:texture});
+        this.plane = new THREE.Mesh(planeGeometry, material);      
+    }
+
+    get mesh() {
+        return this.plane;
+    }
+
+}
 
 const cameraMovementSpeed = 0.1;
-const cameraRotationSpeed = 0.03;
+const cameraRotationSpeed = 0.02;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -11,25 +26,32 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight); // app resolution
 document.body.appendChild(renderer.domElement);
 
-const planeGeometry = new THREE.PlaneGeometry(1, 1);
 const cameraPivotGeometry = new THREE.BoxGeometry(0.2,0.2,1);
 
-const texture = new THREE.TextureLoader().load('..\\assets\\textures\\grass.png');
-const material = new THREE.MeshBasicMaterial({map:texture, side:THREE.DoubleSide});
-
-const plane = new THREE.Mesh(planeGeometry, material);
 const cameraPivot = new THREE.Mesh(cameraPivotGeometry);
 
-scene.add(plane);
 scene.add(cameraPivot);
 cameraPivot.add(camera);
 
-// cameraPivot.position.set(0,0,-5);
+cameraPivot.position.set(0,0,5);
 
 camera.position.set(0,5,0);
 camera.rotation.x = (-45 * Math.PI) / 180;
-plane.rotation.x = (90 * Math.PI) / 180;
-plane.position.y = 0;
+
+
+// initializing tiles
+const tiles = new Array(10);
+for (let i = 0; i < 10; i++) {
+    tiles[i] = new Array(10);
+    for (let j = 0; j < 10; j++) {
+        let auxPlane = new Tile().mesh;
+        auxPlane.rotation.x = (270 * Math.PI) / 180;
+        auxPlane.position.x = j;
+        auxPlane.position.z = i;
+        tiles[i][j] = auxPlane;
+        scene.add(auxPlane);
+    }
+}
 
 function animate () {
     requestAnimationFrame(animate);
@@ -55,11 +77,9 @@ function checkInput () {
         }
 
         if(e.key == 'ArrowLeft'){
-            // camera.rotateOnWorldAxis(new THREE.Vector3(0,1,0), cameraRotationSpeed);
             cameraPivot.rotateOnWorldAxis(new THREE.Vector3(0,1,0), cameraRotationSpeed * 2);
         }
         if(e.key == 'ArrowRight'){
-            // camera.rotateOnWorldAxis(new THREE.Vector3(0,1,0), -cameraRotationSpeed);
             cameraPivot.rotateOnWorldAxis(new THREE.Vector3(0,1,0), -cameraRotationSpeed * 2);
         }
     };
