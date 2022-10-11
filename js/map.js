@@ -65,15 +65,20 @@ const onMouse1Down = (event) => {
         pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(pointer, camera);
 
-        
         const intersects = raycaster.intersectObjects(scene.children, false);
         
+        // muda a cor do novo selecionado e volta a cor original do antigo selecionado
         if(intersects.length > 0){
-            if(selected != null){
+            let obj = intersects[0].object;
+            if (selected != null){
                 selected.material.color.set(0xffffff);
             }
-            let obj = intersects[0].object;
-            if(obj instanceof THREE.Object3D){
+            if (selected === obj){
+                console.log('é igual');
+                selected.material.color.setHex(0xffffff);
+                selected = null;
+                // obj.material.color.setHex(0xffffff);
+            } else if (obj instanceof THREE.Object3D){ // TODO intanceof Hero
                 obj.material.color.setHex(0x05f505);
                 selected = obj;
             }
@@ -91,8 +96,7 @@ const onMouse1Down = (event) => {
         }
     }
 
-    
-
+    // apagar objeto
     // pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
     // pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
     // raycaster.setFromCamera(pointer, camera);
@@ -115,7 +119,6 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    render();
 }
 window.addEventListener('resize', onWindowResize, false)
 
@@ -128,7 +131,6 @@ function animate () {
 }
 
 function checkInput () {
-
     document.onkeydown = function (e) {
         if(e.key == 'w'){
             cameraPivot.translateOnAxis(new THREE.Vector3(0,0,1), -cameraMovementSpeed);
